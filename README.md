@@ -5,6 +5,8 @@ An Anova Precision Cooker (Sous Vide) Bluetooth API Python Wrapper
 
 This is a Python wrapper of the [Anova Precision Cooker](https://anovaculinary.com/anova-precision-cooker/) (Sous Vide) API via the Bluetooth LE connection. Under the hood, it utilizes [pygattlib](https://bitbucket.org/OscarAcena/pygattlib) for the Bluetooth LE communications.
 
+The library is tested on [C.H.I.P](https://docs.getchip.com/chip.html) with Debian + Python 2.7
+
 ## Acknowledgements
 
 * This work relies heavily on the researches from [dfrankland/sous-vide](https://github.com/dfrankland/sous-vide/), a very nice API for Node JS. Commands used in _pyanova_ are based on its [research on the Android APP APK](https://github.com/dfrankland/sous-vide/blob/master/docs/ble.md).
@@ -16,6 +18,7 @@ This is a Python wrapper of the [Anova Precision Cooker](https://anovaculinary.c
 
 * [BlueZ](http://www.bluez.org/) - required by _pygattlib_
 * [Boost](http://www.boost.org/) - required by _pygattlib_
+* [gLib2.0](https://developer.gnome.org/glib/) - required by _pygattlib_
 * Have `root` permissions for interacting with your Bluetooth devices
 
 ### Install using Python pip
@@ -55,7 +58,7 @@ If _BlueZ_ is installed correctly, `hcitool` should be avaialble in the system.
 You can use the library's syncrhonized APIs
 
 ```python
-cooker = pyanova('01:02:03:04:31:00')
+cooker = PyAnova('01:02:03:04:31:00')
 # status
 print "Current status: " + cooker.read_status()
 print "Current temperature unit is set to: " + cooker.read_temperature_unit()
