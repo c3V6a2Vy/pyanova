@@ -82,6 +82,7 @@ DEFAULT_HANDLER = logging.StreamHandler()
 DEFAULT_HANDLER.setFormatter(DEFAULT_LOGGING_FORMATER)
 DEFAULT_LOGGER = logging.getLogger('pyanova_default_logger')
 DEFAULT_LOGGER.addHandler(DEFAULT_HANDLER)
+DEFAULT_LOGGER.setLevel(logging.INFO)
 
 import pygatt
 import threading
@@ -101,26 +102,6 @@ class PyAnova(object):
     cb_resp = None
 
     @staticmethod
-    def DEFAULT_DEBUG_LOGGER_PROVIDER():
-        """This method returns the default logger in debug level
-
-        Returns:
-            logging.Logger: the debug logger
-        """
-        DEFAULT_LOGGER.setLevel(logging.DEBUG)
-        return DEFAULT_LOGGER
-
-    @staticmethod
-    def DEFAULT_LOGGER_PROVIDER():
-        """This method returns the default logger in info level
-
-        Returns:
-            logging.Logger: the default logger
-        """
-        DEFAULT_LOGGER.setLevel(logging.INFO)
-        return DEFAULT_LOGGER
-
-    @staticmethod
     def indication_callback(handle, value):
         """This is a callback function for `pygatt`_ BLE notification
         
@@ -135,7 +116,7 @@ class PyAnova(object):
         PyAnova.cb_cond.notify()
         PyAnova.cb_cond.release()
 
-    def __init__(self, auto_connect=True, logger_provider=PyAnova.DEFAULT_LOGGER_PROVIDER):
+    def __init__(self, auto_connect=True, logger=DEFAULT_LOGGER, debug=False):
         """This is the constructor for a pyanova.PyAnova object
         
         there are two ways of constructing a PyAnova object: 'auto mode' and 'manual mode'
@@ -145,12 +126,14 @@ class PyAnova(object):
 
         Args:
             auto_connect (bool): to use auto mode or not
-            logger_provider (func): a function handle that returns a `logging.Logger`_ object, defualt to `DEFAULT_DEBUG_LOGGER_PROVIDER`_
+            logger (logging.Logger): logger, defualt to `DEFAULT_LOGGER`_
+            debug (bool): if set to Ture logger would set to `logging.DEBUG`_ level
         
         """
         self._dev = None
         self._adapter = pygatt.GATTToolBackend()
-        self._logger = logger_provider()
+        self._logger = DEFAULT_LOGGER
+        if debug: self._logger.setLevel(logging.DEBUG)
         if auto_connect: self.auto_connect()
 
     def __del__(self):
