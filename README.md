@@ -17,6 +17,7 @@ The library is tested on [C.H.I.P](https://docs.getchip.com/chip.html) with Debi
 ### Prerequisites
 
 * [pygatt](https://github.com/peplin/pygatt) - specifically, it uses the [gatttool backend](https://github.com/peplin/pygatt/tree/master/pygatt/backends/gatttool)
+* [bluez](https://git.kernel.org/pub/scm/bluetooth/bluez.git) - specifically, the gatttool backend requires [hcitool](https://github.com/pauloborges/bluez/blob/master/tools/hcitool.c), make sure you can find `hcitool` in your system.
 
 ### Install using Python pip
 Once the prerequisite are satisfied, you can install _pyanova_ with pip: `pip install pyanova`
@@ -35,7 +36,7 @@ pa = pyanova.PyAnova()
 pa.get_status()
 ```
 
-### Discover
+### Manual mode
 Alternatively, you can fully control the discover and connect phrases of an PyAnova object
 
 ```python
@@ -46,6 +47,11 @@ devices = pa.discover(list_all=False, timeout=3)
 pa.connect_device(devices[0])
 pa.get_status()
 ```
+
+### TODO
+* Unit tests
+* Autogen docs
+* Probably swtich to [pygattlib](https://bitbucket.org/OscarAcena/pygattlib)?
 
 ### Demo
 see: samples/pyanova_terminal.py
