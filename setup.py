@@ -8,7 +8,7 @@
 try:
     from setuptools import setup, find_packages
 except ImportError:
-from distutils.core import setup # pylint: disable=F0401,E0611
+    from distutils.core import setup # pylint: disable=F0401,E0611
 
 setup(
     name='pyanova',
