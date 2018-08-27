@@ -1,6 +1,8 @@
 # pyanova
 An Anova Precision Cooker (Sous Vide) Bluetooth API Python Wrapper
 
+![pypi-pyanova](https://img.shields.io/pypi/v/pyanova.svg?style=flat-square)
+
 ## Descirption
 
 This is a Python wrapper of the [Anova Precision Cooker](https://anovaculinary.com/anova-precision-cooker/) (Sous Vide) API via the Bluetooth LE connection. Under the hood, it utilizes [peplin/pygatt](https://github.com/peplin/pygatt) for the Bluetooth LE communications.
