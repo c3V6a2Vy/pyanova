@@ -1,7 +1,7 @@
 # pyanova
 An Anova Precision Cooker (Sous Vide) Bluetooth API Python Wrapper
 
-![pypi-pyanova](https://img.shields.io/pypi/v/pyanova.svg?style=flat-square)
+[![pypi-pyanova](https://img.shields.io/pypi/v/pyanova.svg?style=flat-square)](https://pypi.org/project/pyanova/)
 
 ## Descirption
 
