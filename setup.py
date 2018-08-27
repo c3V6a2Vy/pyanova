@@ -22,6 +22,7 @@ setup(
         'pygatt>=3.2.0',
         'pexpect>=4.6.0'
     ],
+    description='A Python Library for Anova Precision Cooker',
     long_description=open('README.md').read(),
     zip_safe=False,
     include_package_data=True,
