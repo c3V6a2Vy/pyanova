@@ -82,13 +82,6 @@ DEFAULT_HANDLER = logging.StreamHandler()
 DEFAULT_HANDLER.setFormatter(DEFAULT_LOGGING_FORMATER)
 DEFAULT_LOGGER = logging.getLogger('pyanova_default_logger')
 DEFAULT_LOGGER.addHandler(DEFAULT_HANDLER)
-def DEFAULT_DEBUG_LOGGER_PROVIDER():
-    DEFAULT_LOGGER.setLevel(logging.DEBUG)
-    return DEFAULT_LOGGER
-
-def DEFAULT_LOGGER_PROVIDER():
-    DEFAULT_LOGGER.setLevel(logging.INFO)
-    return DEFAULT_LOGGER
 
 import pygatt
 import threading
@@ -108,6 +101,26 @@ class PyAnova(object):
     cb_resp = None
 
     @staticmethod
+    def DEFAULT_DEBUG_LOGGER_PROVIDER():
+        """This method returns the default logger in debug level
+
+        Returns:
+            logging.Logger: the debug logger
+        """
+        DEFAULT_LOGGER.setLevel(logging.DEBUG)
+        return DEFAULT_LOGGER
+
+    @staticmethod
+    def DEFAULT_LOGGER_PROVIDER():
+        """This method returns the default logger in info level
+
+        Returns:
+            logging.Logger: the default logger
+        """
+        DEFAULT_LOGGER.setLevel(logging.INFO)
+        return DEFAULT_LOGGER
+
+    @staticmethod
     def indication_callback(handle, value):
         """This is a callback function for `pygatt`_ BLE notification
         
@@ -122,7 +135,7 @@ class PyAnova(object):
         PyAnova.cb_cond.notify()
         PyAnova.cb_cond.release()
 
-    def __init__(self, auto_connect=True, logger_provider=DEFAULT_DEBUG_LOGGER_PROVIDER):
+    def __init__(self, auto_connect=True, logger_provider=PyAnova.DEFAULT_LOGGER_PROVIDER):
         """This is the constructor for a pyanova.PyAnova object
         
         there are two ways of constructing a PyAnova object: 'auto mode' and 'manual mode'

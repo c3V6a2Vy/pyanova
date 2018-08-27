@@ -14,7 +14,7 @@ import pyanova
 if __name__ == '__main__':
     print '~~ pyanova demo ~~'
     print '-- Initializing PyAnova object'
-    pa = pyanova.PyAnova()
+    pa = pyanova.PyAnova(logger_provider=pyanova.DEFAULT_DEBUG_LOGGER_PROVIDER)
     cmd_re = re.compile('^get|^stop|^set')
     cmd_list = list(filter(lambda m: cmd_re.match(m), dir(pa)))
     print '-- PyAnova object initialized'
