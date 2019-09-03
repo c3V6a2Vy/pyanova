@@ -185,7 +185,14 @@ class PyAnova(object):
                    e.g: [{'name': 'ffs', 'address': '01:02:03:04:05:10'}, {'name': 'rlx', 'address': '01:02:03:04:05:21'}]
         
         """
-        devices = self._adapter.scan(run_as_root=True, timeout=timeout)
+        retries = 0
+        while retries < 5:
+            try:
+                devices = self._adapter.scan(run_as_root=True, timeout=timeout)
+            except pygatt.exceptions.BLEError:
+                self._logger.info('Resetting BLE Adapter, retrying scan')
+                self._adapter.reset()
+                retries += 1
         if list_all:
             return devices
         return list(filter(lambda dev: dev_mac_pattern.match(dev['address']), devices))
