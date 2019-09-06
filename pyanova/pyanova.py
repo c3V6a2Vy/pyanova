@@ -201,7 +201,8 @@ class PyAnova(object):
                 if retry_count >= retries:
                     self._logger.error('BLE Scan failed due to adapter not able to reset')
                     raise e
-                self._logger.info('Resetting BLE Adapter, retrying scan')
+                self._logger.info('Resetting BLE Adapter, retrying scan. {0} retries left'.format(
+                    retries - retry_count))
                 self._adapter.reset()
         if list_all:
             return devices
