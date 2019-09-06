@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- mode: python; coding: utf-8 -*-
 
 # Copyright (C) 2017, c3V6a2Vy <c3V6a2Vy@protonmail.com>
@@ -31,5 +31,6 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7'
+        'Programming Language :: Python :: 3.7'
     )
 )

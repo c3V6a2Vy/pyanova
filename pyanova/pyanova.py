@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- mode: python; coding: utf-8 -*-
 
 # Copyright (C) 2017, c3V6a2Vy <c3V6a2Vy@protonmail.com>
@@ -251,7 +251,7 @@ class PyAnova(object):
 
         """
         self._logger.debug('Command to be sent [%s]'%strcmd)
-        bytedata = bytearray("%s\r"%(strcmd.strip()))
+        bytedata = bytearray("%s\r"%(strcmd.strip()), 'utf8')
         self._logger.debug('Acquiring blocking command lock for [%s]'%strcmd)
         PyAnova.cmd_lock.acquire(True)
         PyAnova.cb_resp = None
