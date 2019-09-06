@@ -74,6 +74,7 @@ RESP_INVALID_CMD = "Invalid Command"
 # Connection settings
 DEFAULT_TIMEOUT_SEC = 10
 DEFAULT_CMD_TIMEOUT_SEC = 5
+DEFAULT_SCAN_RETRIES = 2
 
 # Logging format
 import logging
@@ -172,20 +173,37 @@ class PyAnova(object):
         # it can control 1 device only, taking the first found Anova device
         self.connect_device(anova_dev_props[0])
 
-    def discover(self, list_all = False, dev_mac_pattern=DEFAULT_DEV_MAC_PATTERN, timeout=DEFAULT_TIMEOUT_SEC):
+    def discover(self, list_all = False, dev_mac_pattern=DEFAULT_DEV_MAC_PATTERN, timeout=DEFAULT_TIMEOUT_SEC, retries=DEFAULT_SCAN_RETRIES):
         """This function discovers nearby Bluetooh Low Energy (BLE) devices
         
         Args:
             list_all (bool): whetehr to list all discovered BLE devices or devices that matched the `dev_mac_pattern`_, default to `False`
             dev_mac_pattern (re.Pattern): compiled pattern for targeted mac addressed, default to `DEFAULT_DEV_MAC_PATTERN`_
             timeout (float): time to spent for discovering devices, default to `DEFAULT_TIMEOUT_SEC`_
+            retries (int): number of retries before failing with a BLEError, defaults to `DEFAULT_SCAN_RETRIES`
+
+        Raises:
+            BLEError: Bluetooth Adapter error if a scan cannot be completed.
 
         Returns:
             array: array of device properties that is a dict with 'name' and 'address' as keys 
                    e.g: [{'name': 'ffs', 'address': '01:02:03:04:05:10'}, {'name': 'rlx', 'address': '01:02:03:04:05:21'}]
         
         """
-        devices = self._adapter.scan(run_as_root=True, timeout=timeout)
+        retry_count = 0
+        complete = False
+        while not complete:
+            try:
+                devices = self._adapter.scan(run_as_root=True, timeout=timeout)
+                complete = True
+            except pygatt.exceptions.BLEError as e:
+                retry_count += 1
+                if retry_count >= retries:
+                    self._logger.error('BLE Scan failed due to adapter not able to reset')
+                    raise e
+                self._logger.info('Resetting BLE Adapter, retrying scan. {0} retries left'.format(
+                    retries - retry_count))
+                self._adapter.reset()
         if list_all:
             return devices
         return list(filter(lambda dev: dev_mac_pattern.match(dev['address']), devices))
