@@ -8,9 +8,9 @@
 """REPL Demo with pyanova
 
 """
+from __future__ import print_function
 import re
 from pyanova import pyanova
-from __future__ import print_function
 
 if __name__ == '__main__':
     print('~~ pyanova demo ~~')
@@ -22,10 +22,18 @@ if __name__ == '__main__':
     print('-- Available commands:\n    %s'%'\n    '.join(cmd_list))
     print('-- Type commands like: \'get_current_temperature()\' or \'set_temperature(42)\'')
     print('-- Type \'bye\' to end demo')
+
+    # for python2/3 compatibility
+    try: input = raw_input
+    except NameError: pass
+
     while True:
-        ri = raw_input('> ')
+        ri = input('> ')
         if ri.lower().startswith('bye'):
             print('cya.')
             break
         else:
-            print('< ' + eval('pa.'+ri))
+            try:
+                print('< ' + eval('pa.'+ri))
+            except:
+                print('< failed to execute command: ' + ri + ', make sure command is a valid method with proper arguments.')
