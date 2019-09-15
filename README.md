@@ -42,7 +42,7 @@ pa.get_status()
 Alternatively, you can fully control the discover and connect phrases of an PyAnova object
 
 ```python
-import pyanova
+from pyanova import pyanova
 
 pa = pyanova.PyAnova(auto_connect=False)
 devices = pa.discover(list_all=False, timeout=3)
