@@ -12,3 +12,8 @@
 # pyanova-[0.1.3]
 
 1. bug fix: fixed initialization bug, removed logger provider
+
+# pyanova-[0.2.0]
+
+1. added retry logics to `.discover()` method. [issue#4](https://github.com/c3V6a2Vy/pyanova/issues/4) (Contribution from [wsidl](https://github.com/wsidl))
+2. added Python3 support
