@@ -23,6 +23,7 @@ setup(
         'pexpect'
     ],
     description='A Python Library for Anova Precision Cooker',
+    long_description_content_type="text/markdown",
     long_description=open('README.md').read(),
     zip_safe=False,
     include_package_data=True,
