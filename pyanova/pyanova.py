@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- mode: python; coding: utf-8 -*-
 
 # Copyright (C) 2017, c3V6a2Vy <c3V6a2Vy@protonmail.com>
@@ -269,7 +269,7 @@ class PyAnova(object):
 
         """
         self._logger.debug('Command to be sent [%s]'%strcmd)
-        bytedata = bytearray("%s\r"%(strcmd.strip()))
+        bytedata = bytearray("%s\r"%(strcmd.strip()), 'utf8')
         self._logger.debug('Acquiring blocking command lock for [%s]'%strcmd)
         PyAnova.cmd_lock.acquire(True)
         PyAnova.cb_resp = None
@@ -286,7 +286,7 @@ class PyAnova(object):
             self._logger.error(errmsg)
             raise RuntimeError(errmsg)
         self._logger.debug('Received response from callback: %s'%str(PyAnova.cb_resp))
-        resp = str(PyAnova.cb_resp['value']).strip()
+        resp = PyAnova.cb_resp['value'].decode('utf8').strip()
         PyAnova.cb_resp = None
         PyAnova.cb_cond.release()
         self._logger.debug('Released callback condition lock for [%s]'%strcmd)

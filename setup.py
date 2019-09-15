@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- mode: python; coding: utf-8 -*-
 
 # Copyright (C) 2017, c3V6a2Vy <c3V6a2Vy@protonmail.com>
@@ -15,7 +15,7 @@ setup(
     author='c3V6a2Vy',
     author_email='c3V6a2Vy@protonmail.com',
     version='0.1.3',
-    packages=['pyanova',],
+    packages=find_packages(),
     url='https://github.com/c3V6a2Vy/pyanova',
     license='Apache License 2.0',
     install_requires=[
@@ -30,6 +30,10 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7'
+        'Programming Language :: Python :: 2.7',
+        'programming language :: python :: 3.4',
+        'programming language :: python :: 3.5',
+        'programming language :: python :: 3.6',
+        'programming language :: python :: 3.7'
     )
 )
