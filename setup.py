@@ -15,7 +15,7 @@ setup(
     author='c3V6a2Vy',
     author_email='c3V6a2Vy@protonmail.com',
     version='0.1.3',
-    packages=['pyanova',],
+    packages=find_packages(),
     url='https://github.com/c3V6a2Vy/pyanova',
     license='Apache License 2.0',
     install_requires=[

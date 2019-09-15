@@ -268,7 +268,7 @@ class PyAnova(object):
             self._logger.error(errmsg)
             raise RuntimeError(errmsg)
         self._logger.debug('Received response from callback: %s'%str(PyAnova.cb_resp))
-        resp = str(PyAnova.cb_resp['value']).strip()
+        resp = PyAnova.cb_resp['value'].decode('utf8').strip()
         PyAnova.cb_resp = None
         PyAnova.cb_cond.release()
         self._logger.debug('Released callback condition lock for [%s]'%strcmd)

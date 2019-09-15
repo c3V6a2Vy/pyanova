@@ -7,7 +7,7 @@ An Anova Precision Cooker (Sous Vide) Bluetooth API Python Wrapper
 
 This is a Python wrapper of the [Anova Precision Cooker](https://anovaculinary.com/anova-precision-cooker/) (Sous Vide) API via the Bluetooth LE connection. Under the hood, it utilizes [peplin/pygatt](https://github.com/peplin/pygatt) for the Bluetooth LE communications.
 
-The library is tested on [C.H.I.P](https://docs.getchip.com/chip.html) with Debian + Python 2.7
+The library is tested on [C.H.I.P](https://docs.getchip.com/chip.html) with Debian + Python 2.7 and Python 3.4
 
 ## Acknowledgements
 
@@ -32,7 +32,7 @@ Once the prerequisite are satisfied, you can install _pyanova_ with pip: `pip in
 You can initialize PyAnova easily with automode which will automatically discover and connect to the first available Anova device
 
 ```python
-import pyanova
+from pyanova import pyanova
 
 pa = pyanova.PyAnova()
 pa.get_status()
