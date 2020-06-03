@@ -51,6 +51,7 @@ pa.get_status()
 ```
 
 ### TODO
+* Support Anova Nano: https://github.com/c3V6a2Vy/pyanova/issues/10
 * Unit tests
 * Autogen docs
 * Probably swtich to [pygattlib](https://bitbucket.org/OscarAcena/pygattlib)?
