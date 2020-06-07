@@ -277,13 +277,16 @@ class PyAnova(object):
         PyAnova.cb_cond.acquire(True)
         self._logger.debug('Writing %s to handle: 0x%x'%(strcmd, handle))
         self._dev.char_write_handle(handle, bytedata)
-        while not PyAnova.cb_resp:
-            self._logger.debug('Waiting for response from callback, timeout: %.2f'%cmd_timeout)
-            PyAnova.cb_cond.wait(cmd_timeout)
+        self._logger.debug('Waiting for response from callback, timeout: %.2f'%cmd_timeout)
+        PyAnova.cb_cond.wait(cmd_timeout)
         self._logger.debug('Processing response from callback')
         if not PyAnova.cb_resp:
             errmsg = 'Timed out waiting for callback for command [%s]'%strcmd
             self._logger.error(errmsg)
+            PyAnova.cb_cond.release()
+            self._logger.debug('Released callback condition lock due to timeout')
+            PyAnova.cmd_lock.release()
+            self._logger.debug('Released command lock due to timeout')
             raise RuntimeError(errmsg)
         self._logger.debug('Received response from callback: %s'%str(PyAnova.cb_resp))
         resp = PyAnova.cb_resp['value'].decode('utf8').strip()
