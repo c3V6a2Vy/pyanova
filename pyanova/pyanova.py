@@ -208,7 +208,7 @@ class PyAnova(object):
             return devices
         return list(filter(lambda dev: dev_mac_pattern.match(dev['address']), devices))
 
-    def connect_device(self, dev_prop, notification_uuid=DEVICE_NOTIFICATION_CHAR_UUID):
+    def connect_device(self, dev_prop, notification_uuid=DEVICE_NOTIFICATION_CHAR_UUID, wait_for_response=True):
         """This function connects to an Anova device and register for notification
 
         Args:
@@ -217,14 +217,15 @@ class PyAnova(object):
             notification_uuid: the notification uuid to subscribe to, default to `DEVICE_NOTIFICATION_CHAR_UUID`_
                                this value should be constant for all Anova Bluetooth-only devices and can be discover
                                with gatt tool.
-        
+            wait_for_response: default True, some Anova devices will not respond to subscription requests so this
+                                prevents hanging of the program.
         """
         self._logger.info('Starting PyAnova BLE adapter')
         self._adapter.start()
         self._logger.info('Connecting to Anova device: %s'%str(dev_prop))
         self._dev = self._adapter.connect(dev_prop['address'])
         self._logger.info('Connected to: %s'%str(dev_prop))
-        self._dev.subscribe(notification_uuid, callback=PyAnova.indication_callback, indication=True)
+        self._dev.subscribe(notification_uuid, callback=PyAnova.indication_callback, indication=True, wait_for_response=wait_for_response)
         self._logger.info('Subscribed to notification handle: %s'%notification_uuid)
 
     def disconnect(self):
