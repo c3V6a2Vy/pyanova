@@ -275,7 +275,7 @@ class PyAnova(object):
             PyAnova.cb_resp = None
             self._logger.debug('Acquiring callback condition lock for [%s]'%strcmd)
             with PyAnova.cb_cond:
-                self._logger.debug('Writing %s to handle: 0x%x'%(strcmd, handle))
+                self._logger.debug('Writing [%s] to handle: 0x%x'%(strcmd, handle))
                 self._dev.char_write_handle(handle, bytedata)
                 self._logger.debug('Waiting for response from callback, timeout: %.2f'%cmd_timeout)
                 PyAnova.cb_cond.wait(cmd_timeout)
