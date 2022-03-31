@@ -112,10 +112,9 @@ class PyAnova(object):
             https://github.com/peplin/pygatt/blob/91db29e7a82b36998eae56ef31a273ba4dad0851/pygatt/device.py#L131
 
         """
-        PyAnova.cb_cond.acquire()
-        PyAnova.cb_resp = {'handle': handle, 'value': value}
-        PyAnova.cb_cond.notify()
-        PyAnova.cb_cond.release()
+        with PyAnova.cb_cond:
+            PyAnova.cb_resp = {'handle': handle, 'value': value}
+            PyAnova.cb_cond.notify()
 
     def __init__(self, auto_connect=True, logger=DEFAULT_LOGGER, debug=False):
         """This is the constructor for a pyanova.PyAnova object
@@ -208,7 +207,7 @@ class PyAnova(object):
             return devices
         return list(filter(lambda dev: dev_mac_pattern.match(dev['address']), devices))
 
-    def connect_device(self, dev_prop, notification_uuid=DEVICE_NOTIFICATION_CHAR_UUID):
+    def connect_device(self, dev_prop, notification_uuid=DEVICE_NOTIFICATION_CHAR_UUID, wait_for_response=True):
         """This function connects to an Anova device and register for notification
 
         Args:
@@ -217,14 +216,15 @@ class PyAnova(object):
             notification_uuid: the notification uuid to subscribe to, default to `DEVICE_NOTIFICATION_CHAR_UUID`_
                                this value should be constant for all Anova Bluetooth-only devices and can be discover
                                with gatt tool.
-        
+            wait_for_response: default True, some Anova devices will not respond to subscription requests so this
+                                prevents hanging of the program.
         """
         self._logger.info('Starting PyAnova BLE adapter')
         self._adapter.start()
         self._logger.info('Connecting to Anova device: %s'%str(dev_prop))
         self._dev = self._adapter.connect(dev_prop['address'])
         self._logger.info('Connected to: %s'%str(dev_prop))
-        self._dev.subscribe(notification_uuid, callback=PyAnova.indication_callback, indication=True)
+        self._dev.subscribe(notification_uuid, callback=PyAnova.indication_callback, indication=True, wait_for_response=wait_for_response)
         self._logger.info('Subscribed to notification handle: %s'%notification_uuid)
 
     def disconnect(self):
@@ -271,29 +271,25 @@ class PyAnova(object):
         self._logger.debug('Command to be sent [%s]'%strcmd)
         bytedata = bytearray("%s\r"%(strcmd.strip()), 'utf8')
         self._logger.debug('Acquiring blocking command lock for [%s]'%strcmd)
-        PyAnova.cmd_lock.acquire(True)
-        PyAnova.cb_resp = None
-        self._logger.debug('Acquiring callback condition lock for [%s]'%strcmd)
-        PyAnova.cb_cond.acquire(True)
-        self._logger.debug('Writing %s to handle: 0x%x'%(strcmd, handle))
-        self._dev.char_write_handle(handle, bytedata)
-        self._logger.debug('Waiting for response from callback, timeout: %.2f'%cmd_timeout)
-        PyAnova.cb_cond.wait(cmd_timeout)
-        self._logger.debug('Processing response from callback')
-        if not PyAnova.cb_resp:
-            errmsg = 'Timed out waiting for callback for command [%s]'%strcmd
-            self._logger.error(errmsg)
-            PyAnova.cb_cond.release()
-            self._logger.debug('Released callback condition lock due to timeout')
-            PyAnova.cmd_lock.release()
-            self._logger.debug('Released command lock due to timeout')
-            raise RuntimeError(errmsg)
-        self._logger.debug('Received response from callback: %s'%str(PyAnova.cb_resp))
-        resp = PyAnova.cb_resp['value'].decode('utf8').strip()
-        PyAnova.cb_resp = None
-        PyAnova.cb_cond.release()
-        self._logger.debug('Released callback condition lock for [%s]'%strcmd)
-        PyAnova.cmd_lock.release()
+        with PyAnova.cmd_lock:
+            PyAnova.cb_resp = None
+            self._logger.debug('Acquiring callback condition lock for [%s]'%strcmd)
+            with PyAnova.cb_cond:
+                self._logger.debug('Writing [%s] to handle: 0x%x'%(strcmd, handle))
+                self._dev.char_write_handle(handle, bytedata)
+                self._logger.debug('Waiting for response from callback, timeout: %.2f'%cmd_timeout)
+                PyAnova.cb_cond.wait(cmd_timeout)
+                self._logger.debug('Processing response from callback')
+                if not PyAnova.cb_resp:
+                    errmsg = 'Timed out waiting for callback for command [%s]'%strcmd
+                    self._logger.error(errmsg)
+                    self._logger.debug('Releasing callback condition lock due to timeout')
+                    self._logger.debug('Releasing command lock due to timeout')
+                    raise RuntimeError(errmsg)
+                self._logger.debug('Received response from callback: %s'%str(PyAnova.cb_resp))
+                resp = PyAnova.cb_resp['value'].decode('utf8').strip()
+                PyAnova.cb_resp = None
+            self._logger.debug('Released callback condition lock for [%s]'%strcmd)
         self._logger.debug('Released command lock for [%s]'%strcmd)
         return resp
 
